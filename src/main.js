@@ -7,7 +7,8 @@ import { load_config } from './config.js'
 
 const { wjx, qq_form, cache } = load_config()
 
-const browser = await firefox.launch({ headless: false, slowMo: 50 })
+// 可能有扫码登录，无法使用 headless 模式
+const browser = await firefox.launch({ headless: false })
 const context = await browser.newContext({
   storageState: existsSync(cache.state) ? cache.state : undefined,
 })
