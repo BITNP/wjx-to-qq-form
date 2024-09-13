@@ -9,12 +9,15 @@ import { zip } from 'es-toolkit'
  */
 export async function download_from_wjx(page, activity_id) {
   await page.goto('https://www.wjx.cn')
-  await Promise.race([
+  await Promise.any([
     // 若未登录，请手动登录（因为有时需要滑动验证码），然后会自动转到后台
     page
       .getByRole('link', { name: '登录' })
       .click()
-      .then(() => console.log('🎭 请登录问卷星，建议勾选“下次自动登录”。')),
+      .then(async () => {
+        await page.getByText('下次自动登录').check()
+        console.log('🎭 请登录问卷星。')
+      }),
     // 若已登录，直接转到后台
     page
       .getByRole('link', { name: '进入管理后台' })
