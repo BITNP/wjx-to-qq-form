@@ -5,7 +5,7 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "main": "node main.js",
+    "main": "node src/main.js",
     "check": "biome check --write ."
   },
   "keywords": [],

@@ -1,15 +1,10 @@
-import { existsSync, readFileSync } from 'node:fs'
-import { parse } from '@std/toml'
-import { firefox } from 'playwright'
-import readXlsxFile from 'read-excel-file/node'
-
 /**
  * 从问卷星下载
  * @param {import('playwright').Page} page
  * @param {string} activity_id 管理后台页面地址中“activity=”后的一串数字
  * @returns {Promise<import('playwright').Download>}
  */
-async function download_from_wjx(page, activity_id) {
+export async function download_from_wjx(page, activity_id) {
   await page.goto('https://www.wjx.cn')
   await Promise.race([
     // 若未登录，请手动登录（因为有时需要滑动验证码），然后会自动转到后台
@@ -38,20 +33,18 @@ async function download_from_wjx(page, activity_id) {
   const download = await downloadPromise
   return download
 }
-
 /**
  * 上传到腾讯收集表
  * @param {import('playwright').Page} page
  * @param {string} form_id 填写页面中“/form/page/”后的一串字母数字
  * @param {Array} new_rows
  */
-async function upload_to_qq_form(page, form_id, new_rows) {
+export async function upload_to_qq_form(page, form_id, new_rows) {
   await page.goto(`https://docs.qq.com/form/page/${form_id}`, { waitUntil: 'load' })
   await page.getByText('使用腾讯文档打开').isVisible()
 
   const logged_in = page.url().endsWith('#/fill-detail')
   // 未登录时是 #/fill
-
   if (logged_in) {
     console.log('✅ 已登录腾讯文档。')
   } else {
@@ -70,24 +63,3 @@ async function upload_to_qq_form(page, form_id, new_rows) {
   await page.getByRole('button', { name: '提交' }).click()
   await page.getByRole('button', { name: '确认' }).click()
 }
-
-/** @type {{"wjx": string, "qq-form": string, "state_storage"?: "string"}} */
-const config = parse(readFileSync('config.toml', 'utf8'))
-const state_storage = config.state_storage ?? 'user.json'
-
-const browser = await firefox.launch({ headless: false, slowMo: 50 })
-const context = await browser.newContext({
-  storageState: existsSync(state_storage) ? state_storage : undefined,
-})
-
-const download = await download_from_wjx(await context.newPage(), config.wjx)
-await context.storageState({ path: state_storage })
-
-const [header, ...rows] = await readXlsxFile(await download.createReadStream())
-
-// TODO: Only upload new rows
-await upload_to_qq_form(await context.newPage(), config['qq-form'], rows)
-await context.storageState({ path: state_storage })
-
-await context.close()
-await browser.close()
