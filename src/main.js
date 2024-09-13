@@ -5,10 +5,10 @@ import readXlsxFile from 'read-excel-file/node'
 import { download_from_wjx, upload_to_qq_form } from './browser.js'
 import { load_config } from './config.js'
 
-const { wjx, qq_form, cache } = load_config()
+const { wjx, qq_form, headless, cache } = load_config()
 
-// 可能有扫码登录，无法使用 headless 模式
-const browser = await firefox.launch({ headless: false })
+// 谨慎使用 headless 模式，因为无法扫码登录
+const browser = await firefox.launch({ headless })
 const context = await browser.newContext({
   storageState: existsSync(cache.state) ? cache.state : undefined,
 })

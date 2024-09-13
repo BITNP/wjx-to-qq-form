@@ -3,13 +3,14 @@ import { join } from 'node:path'
 import { parse } from '@std/toml'
 
 /**
- * @returns {{wjx: string, qq_form: string, cache: { state: string, data: string, last: string } }}
+ * @returns {{wjx: string, qq_form: string, headless: boolean, cache: { state: string, data: string, last: string } }}
  */
 export function load_config() {
   const {
     cache_dir = './cache/',
     wjx,
     'qq-form': qq_form,
+    headless = false,
   } = parse(readFileSync('config.toml', 'utf-8'))
 
   mkdirSync(cache_dir, { recursive: true })
@@ -17,6 +18,7 @@ export function load_config() {
   return {
     wjx,
     qq_form,
+    headless,
     cache: {
       // 登录信息
       state: join(cache_dir, 'state.json'),
