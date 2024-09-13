@@ -16,7 +16,7 @@ export async function download_from_wjx(page, activity_id) {
     page
       .getByRole('link', { name: '进入管理后台' })
       .click()
-      .then(() => console.log('✅ 已登录问卷星。')),
+      .then(() => console.log('✅ 上次已登录问卷星。')),
   ])
   // 手动登录很慢，故取消超时限制
   await page.waitForURL('https://www.wjx.cn/newwjx/manage/myquestionnaires.aspx', { timeout: 0 })
@@ -31,22 +31,23 @@ export async function download_from_wjx(page, activity_id) {
   const downloadPromise = page.waitForEvent('download')
   await page.getByRole('link', { name: '立即下载到本地' }).click()
   const download = await downloadPromise
+  console.log('🧾 已从问卷星下载。')
   return download
 }
 /**
  * 上传到腾讯收集表
  * @param {import('playwright').Page} page
  * @param {string} form_id 填写页面中“/form/page/”后的一串字母数字
- * @param {Array} new_rows
+ * @param {Array} new_records
  */
-export async function upload_to_qq_form(page, form_id, new_rows) {
+export async function upload_to_qq_form(page, form_id, new_records) {
   await page.goto(`https://docs.qq.com/form/page/${form_id}`, { waitUntil: 'load' })
   await page.getByText('使用腾讯文档打开').isVisible()
 
   const logged_in = page.url().endsWith('#/fill-detail')
   // 未登录时是 #/fill
   if (logged_in) {
-    console.log('✅ 已登录腾讯文档。')
+    console.log('✅ 上次已登录腾讯文档。')
   } else {
     await page.getByRole('button', { name: '登录腾讯文档' }).click()
     console.log('🎭 请登录腾讯文档。')
@@ -58,8 +59,9 @@ export async function upload_to_qq_form(page, form_id, new_rows) {
   // TODO: fill rows
   await page.getByText('1A').click()
   await page.getByText('2A').click()
-  await page.getByPlaceholder('请输入').fill(JSON.stringify(new_rows))
+  await page.getByPlaceholder('请输入').fill(JSON.stringify(new_records))
 
   await page.getByRole('button', { name: '提交' }).click()
   await page.getByRole('button', { name: '确认' }).click()
+  console.log('🚀 已上传到腾讯收集表。')
 }
