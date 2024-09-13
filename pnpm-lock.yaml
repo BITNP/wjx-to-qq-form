@@ -11,6 +11,9 @@ importers:
       '@playwright/browser-firefox':
         specifier: ^1.47.0
         version: 1.47.0
+      '@std/toml':
+        specifier: npm:@jsr/std__toml@^1.0.1
+        version: '@jsr/std__toml@1.0.1'
       playwright:
         specifier: ^1.47.0
         version: 1.47.0
@@ -19,6 +22,12 @@ importers:
         version: 5.8.5
 
 packages:
+
+  '@jsr/std__collections@1.0.6':
+    resolution: {integrity: sha512-aRid8G886nSFf/iAl6sl0uSB4RTNXcj0ZmwouLUlU4q+LaHnm9KuT1FjH0chTmsb0TxREEUxlLtT/m8gFPuuGA==, tarball: https://npm.jsr.io/~/11/@jsr/std__collections/1.0.6.tgz}
+
+  '@jsr/std__toml@1.0.1':
+    resolution: {integrity: sha512-ap5hqvSJ3jnjhh3ttP68SR2r50FlDKoT0LCuD4iZg1sl+a37Jb3ILjw9Tpvq1qa2bo0LXRm1jmM5J+LUIuH+1Q==, tarball: https://npm.jsr.io/~/11/@jsr/std__toml/1.0.1.tgz}
 
   '@playwright/browser-firefox@1.47.0':
     resolution: {integrity: sha512-irh2RlA/L1PjnuFOEJdMQG48ZHlpCa8iPuzl0ilUhoHFohjyX8iDP2CtjiCt01l6RpHn0BHSBUF6h5Oste54+w==}
@@ -100,6 +109,12 @@ packages:
     resolution: {integrity: sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==}
 
 snapshots:
+
+  '@jsr/std__collections@1.0.6': {}
+
+  '@jsr/std__toml@1.0.1':
+    dependencies:
+      '@jsr/std__collections': 1.0.6
 
   '@playwright/browser-firefox@1.47.0':
     dependencies:

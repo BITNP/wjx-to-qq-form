@@ -1,5 +1,6 @@
 import { firefox } from 'playwright'
-import { existsSync } from 'node:fs'
+import { parse } from '@std/toml'
+import { existsSync, readFileSync } from 'node:fs'
 import readXlsxFile from 'read-excel-file/node'
 
 /**
@@ -62,17 +63,21 @@ async function upload_to_qq_form (page, form_id, new_rows) {
   await page.getByRole('button', { name: '确认' }).click()
 }
 
-const state_storage = 'user.json'
+
+/** @type {{"wjx": string, "qq-form": string, "state_storage"?: "string"}} */
+const config = parse(readFileSync("config.toml", 'utf8'))
+const state_storage = config.state_storage ?? 'user.json'
+
 const browser = await firefox.launch({ headless: false, slowMo: 50 })
 const context = await browser.newContext({ storageState: existsSync(state_storage) ? state_storage : undefined })
 
-const download = await download_from_wjx(await context.newPage(), 'REPLACE_ME')
+const download = await download_from_wjx(await context.newPage(), config.wjx)
 await context.storageState({ path: state_storage })
 
 const [header, ...rows] = await readXlsxFile(await download.createReadStream())
 
 // TODO: Only upload new rows
-await upload_to_qq_form(await context.newPage(), 'REPLACE_ME', rows)
+await upload_to_qq_form(await context.newPage(), config['qq-form'], rows)
 await context.storageState({ path: state_storage })
 
 await context.close()
