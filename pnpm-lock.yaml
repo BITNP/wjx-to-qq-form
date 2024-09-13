@@ -11,9 +11,15 @@ importers:
       '@playwright/browser-firefox':
         specifier: ^1.47.0
         version: 1.47.0
+      '@std/assert':
+        specifier: npm:@jsr/std__assert@^1.0.5
+        version: '@jsr/std__assert@1.0.5'
       '@std/toml':
         specifier: npm:@jsr/std__toml@^1.0.1
         version: '@jsr/std__toml@1.0.1'
+      es-toolkit:
+        specifier: ^1.18.0
+        version: 1.18.0
       playwright:
         specifier: ^1.47.0
         version: 1.47.0
@@ -84,8 +90,14 @@ packages:
     cpu: [x64]
     os: [win32]
 
+  '@jsr/std__assert@1.0.5':
+    resolution: {integrity: sha512-hQToCCjQDkq8ZNWXD7V/psqTXOd71LDx+Wb1sTuD21oa0SmEuqucXr7APdF40t0ABes22nFzDdjgBsuZFaGlYw==, tarball: https://npm.jsr.io/~/11/@jsr/std__assert/1.0.5.tgz}
+
   '@jsr/std__collections@1.0.6':
     resolution: {integrity: sha512-aRid8G886nSFf/iAl6sl0uSB4RTNXcj0ZmwouLUlU4q+LaHnm9KuT1FjH0chTmsb0TxREEUxlLtT/m8gFPuuGA==, tarball: https://npm.jsr.io/~/11/@jsr/std__collections/1.0.6.tgz}
+
+  '@jsr/std__internal@1.0.3':
+    resolution: {integrity: sha512-6R6UBR4hz0uwYkoYR2KmKj9r8kI1IbbVF8Yxvl0YwE4U8k3YzeCoG1MB/2GjoVNxWyn/bhj0UZSCz7jJb1P0zA==, tarball: https://npm.jsr.io/~/11/@jsr/std__internal/1.0.3.tgz}
 
   '@jsr/std__toml@1.0.1':
     resolution: {integrity: sha512-ap5hqvSJ3jnjhh3ttP68SR2r50FlDKoT0LCuD4iZg1sl+a37Jb3ILjw9Tpvq1qa2bo0LXRm1jmM5J+LUIuH+1Q==, tarball: https://npm.jsr.io/~/11/@jsr/std__toml/1.0.1.tgz}
@@ -106,6 +118,9 @@ packages:
 
   duplexer2@0.1.4:
     resolution: {integrity: sha512-asLFVfWWtJ90ZyOUHMqk7/S2w2guQKxUI2itj3d92ADHhxUSbCMGi1f1cBcJ7xM1To+pE/Khbwo1yuNbMEPKeA==}
+
+  es-toolkit@1.18.0:
+    resolution: {integrity: sha512-J/KKeqozMvgpPSUqZSpt59ZOTku2UrU9cmqmLBt4TmFQ2KCLGf3fXK6Xb2ud5CrpCUHFl/ThijjJkXwa/8sf2g==}
 
   fflate@0.7.4:
     resolution: {integrity: sha512-5u2V/CDW15QM1XbbgS+0DfPxVB+jUKhWEKuuFuHncbk3tEEqzmoXL+2KyOFuKGqOnmdIy0/davWF1CkuwtibCw==}
@@ -206,7 +221,13 @@ snapshots:
   '@biomejs/cli-win32-x64@1.9.0':
     optional: true
 
+  '@jsr/std__assert@1.0.5':
+    dependencies:
+      '@jsr/std__internal': 1.0.3
+
   '@jsr/std__collections@1.0.6': {}
+
+  '@jsr/std__internal@1.0.3': {}
 
   '@jsr/std__toml@1.0.1':
     dependencies:
@@ -225,6 +246,8 @@ snapshots:
   duplexer2@0.1.4:
     dependencies:
       readable-stream: 2.3.8
+
+  es-toolkit@1.18.0: {}
 
   fflate@0.7.4: {}
 

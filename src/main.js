@@ -12,14 +12,20 @@ const context = await browser.newContext({
   storageState: existsSync(cache.state) ? cache.state : undefined,
 })
 
+// 1. 从问卷星下载
+
 const download = await download_from_wjx(await context.newPage(), wjx)
 await context.storageState({ path: cache.state })
 
-/** @type {(number | string)[][]} */
-const [header, ...records] = await readXlsxFile(await download.createReadStream())
+/** @type {(number | string)[][]} 不含序号 */
+const [header, ...records] = (await readXlsxFile(await download.createReadStream())).map((row) =>
+  row.slice(1),
+)
 
 // Only for back up
 await download.saveAs(cache.data)
+
+// 2. 筛选出新记录
 
 /** @type {(number|string)[][] | undefined} */
 let new_records
@@ -31,13 +37,16 @@ try {
 } catch (error) {
   new_records = records
 }
-// 之后要找最后同步时刻，故排序
-new_records.sort((a, b) => new Date(a[1]) - new Date(b[1]))
+
+// 3. 上传到腾讯收集表
 
 if (new_records.length > 0) {
   console.log(`🔍 发现${new_records.length}条新记录。`)
 
-  await upload_to_qq_form(await context.newPage(), qq_form, new_records)
+  await upload_to_qq_form(await context.newPage(), qq_form, { header, records: new_records })
+
+  // 记录最后同步时刻
+  new_records.sort((a, b) => new Date(a[1]) - new Date(b[1]))
   writeFileSync(cache.last, new_records.at(-1)[1], 'utf-8')
 
   await context.storageState({ path: cache.state })

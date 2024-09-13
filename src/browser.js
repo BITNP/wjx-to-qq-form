@@ -1,3 +1,6 @@
+import { assertGreater, assertLessOrEqual, assertStringIncludes } from '@std/assert'
+import { zip } from 'es-toolkit'
+
 /**
  * 从问卷星下载
  * @param {import('playwright').Page} page
@@ -34,14 +37,12 @@ export async function download_from_wjx(page, activity_id) {
   console.log('🧾 已从问卷星下载。')
   return download
 }
+
 /**
- * 上传到腾讯收集表
+ * 登录腾讯收集表并确保切换到“填写”页面
  * @param {import('playwright').Page} page
- * @param {string} form_id 填写页面中“/form/page/”后的一串字母数字
- * @param {Array} new_records
  */
-export async function upload_to_qq_form(page, form_id, new_records) {
-  await page.goto(`https://docs.qq.com/form/page/${form_id}`, { waitUntil: 'load' })
+async function log_in_to_qq_form(page) {
   await page.getByText('使用腾讯文档打开').isVisible()
 
   if (page.url().endsWith('#/result')) {
@@ -64,15 +65,45 @@ export async function upload_to_qq_form(page, form_id, new_records) {
       await page.goto(page.url().replace(/result$/, 'fill-detail'))
     }
   }
+}
 
-  await page.getByText('再填一份').click()
+/**
+ * 上传到腾讯收集表
+ * @param {import('playwright').Page} page
+ * @param {string} form_id 填写页面中“/form/page/”后的一串字母数字
+ * @param {{ header: string[], records: (number|string)[][] }} data
+ */
+export async function upload_to_qq_form(page, form_id, data) {
+  await page.goto(`https://docs.qq.com/form/page/${form_id}`, { waitUntil: 'load' })
+  await log_in_to_qq_form(page)
 
-  // TODO: fill rows
-  await page.getByText('1A').click()
-  await page.getByText('2A').click()
-  await page.getByPlaceholder('请输入').fill(JSON.stringify(new_records))
+  for (const record of data.records) {
+    await Promise.race(['再填一份', '再填写一份'].map((t) => page.getByText(t).click()))
 
-  await page.getByRole('button', { name: '提交' }).click()
-  await page.getByRole('button', { name: '确认' }).click()
-  console.log('🚀 已上传到腾讯收集表。')
+    const forms = await page.locator('.question').all()
+    for (const [label, value, form] of zip(data.header, record, forms)) {
+      assertStringIncludes(await form.locator('.question-title').textContent(), label)
+
+      // 尝试理解按各种题型填写，有任一成功即可
+      await Promise.any([
+        // 问答题：若只填了数字，表格可能会存成 number，故需转换
+        form
+          .getByRole('textbox')
+          .fill(String(value)),
+        // 选择题
+        form
+          .getByRole('radio')
+          .all()
+          .then(async (choices) => {
+            assertGreater(value, 0)
+            assertLessOrEqual(value, choices.length)
+            await choices[value - 1].click()
+          }),
+      ])
+    }
+
+    await page.getByRole('button', { name: '提交' }).click()
+    await page.getByRole('button', { name: '确认' }).click()
+    console.log('🚀 已上传到腾讯收集表。')
+  }
 }

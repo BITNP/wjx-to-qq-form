@@ -13,7 +13,9 @@
   "license": "MIT",
   "dependencies": {
     "@playwright/browser-firefox": "^1.47.0",
+    "@std/assert": "npm:@jsr/std__assert@^1.0.5",
     "@std/toml": "npm:@jsr/std__toml@^1.0.1",
+    "es-toolkit": "^1.18.0",
     "playwright": "^1.47.0",
     "read-excel-file": "^5.8.5"
   },
