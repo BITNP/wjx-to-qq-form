@@ -5,7 +5,8 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "main": "node main.js"
+    "main": "node main.js",
+    "check": "biome check --write ."
   },
   "keywords": [],
   "author": "",
@@ -15,5 +16,8 @@
     "@std/toml": "npm:@jsr/std__toml@^1.0.1",
     "playwright": "^1.47.0",
     "read-excel-file": "^5.8.5"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "1.9.0"
   }
 }
