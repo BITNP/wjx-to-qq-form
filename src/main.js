@@ -33,7 +33,7 @@ try {
   const last = new Date(readFileSync(cache.last, 'utf-8').trim())
   console.log(`📅 上次同步到 ${last.toISOString()}。`)
 
-  new_records = records.filter((r) => new Date(r[1]) > last)
+  new_records = records.filter((r) => new Date(r[0]) > last)
 } catch (error) {
   new_records = records
 }
@@ -46,8 +46,8 @@ if (new_records.length > 0) {
   await upload_to_qq_form(await context.newPage(), qq_form, { header, records: new_records })
 
   // 记录最后同步时刻
-  new_records.sort((a, b) => new Date(a[1]) - new Date(b[1]))
-  writeFileSync(cache.last, new_records.at(-1)[1], 'utf-8')
+  new_records.sort((a, b) => new Date(a[0]) - new Date(b[0]))
+  writeFileSync(cache.last, new_records.at(-1)[0], 'utf-8')
 
   await context.storageState({ path: cache.state })
 } else {
