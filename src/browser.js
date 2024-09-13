@@ -44,6 +44,11 @@ export async function upload_to_qq_form(page, form_id, new_records) {
   await page.goto(`https://docs.qq.com/form/page/${form_id}`, { waitUntil: 'load' })
   await page.getByText('使用腾讯文档打开').isVisible()
 
+  if (page.url().endsWith('#/result')) {
+    // 若是登录账号创建的问卷，会自动转到“统计”，要手动转到“填写”
+    await page.goto(page.url().replace(/result$/, 'fill-detail'))
+  }
+
   const logged_in = page.url().endsWith('#/fill-detail')
   // 未登录时是 #/fill
   if (logged_in) {
@@ -51,7 +56,13 @@ export async function upload_to_qq_form(page, form_id, new_records) {
   } else {
     await page.getByRole('button', { name: '登录腾讯文档' }).click()
     console.log('🎭 请登录腾讯文档。')
-    await page.waitForURL(/\?_t=/) // 等待扫码登录
+    // 等待扫码登录
+    await page.waitForURL(/\?_t=/)
+
+    if (page.url().endsWith('#/result')) {
+      // 若是登录账号创建的问卷，会自动转到“统计”，要手动转到“填写”
+      await page.goto(page.url().replace(/result$/, 'fill-detail'))
+    }
   }
 
   await page.getByText('再填一份').click()
