@@ -2,6 +2,18 @@
 
 从问卷星导出表格，将新数据抄到腾讯收集表，以同步到腾讯文档中。
 
+[![Is It Worth the Time?](https://imgs.xkcd.com/comics/is_it_worth_the_time.png)](https://www.xkcd.com/1205/)
+<!-- https://www.zdic.net/hans/戢 -->
+
+## 动机
+
+整理学生会“[快来和暖暖一起解决权益问题！](https://www.wjx.cn/vm/h07Qc3E.aspx)”，同时为填写的同学保持问卷星的外观。
+
+- 示例问卷星：[快来和暖暖一起](https://www.wjx.cn/vm/rr3ZnVV.aspx)
+- 示例腾讯收集表：[测试](https://docs.qq.com/form/page/DT1lWYmlJWkZFZUto)
+
+<!-- 一周更新几次，每学年几十条记录 -->
+
 ## 安装
 
 ```shell
